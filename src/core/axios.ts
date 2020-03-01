@@ -8,6 +8,7 @@ import {
 } from '../types/index'
 import dispatchAxios from './dispatchRequest'
 import { InterceptorManager } from './interceptorManager'
+import { mergeConfig } from './mergeConfig'
 const withoutDataMethods = ['get', 'delete', 'head', 'options']
 const withDataMethods = ['post', 'put', 'patch']
 
@@ -44,7 +45,7 @@ export default class Axios {
       config = url
     }
     // 在拦截器之前实行合并策略
-
+    config = mergeConfig(this.defaults, config)
     // 这儿放any的原因是泛型可能是AxiosRequestConfig、AxiosRes
     let chain: PromiseChain<any>[] = [
       {
@@ -66,7 +67,6 @@ export default class Axios {
       let { resolved, rejected } = chain.shift()!
       promise = promise.then(resolved as any, rejected)
     }
-
     // return dispatchAxios(config!)
     return promise as AxiosPromise
   }

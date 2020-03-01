@@ -1,21 +1,18 @@
 {
-  "name": "ts-axios-next",
+  "name": "axios",
   "version": "0.0.0",
   "description": "",
-  "keywords": [
-    "typescript",
-    "axios"
-  ],
+  "keywords": [],
   "main": "dist/axios.umd.js",
   "module": "dist/axios.es5.js",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/types/axios.d.ts",
   "files": [
     "dist"
   ],
-  "author": "usebtf@163.com",
+  "author": "--username-- <--usermail-->",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tfeng-use/ts-axios.git"
+    "url": ""
   },
   "license": "MIT",
   "engines": {
@@ -35,9 +32,8 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once",
-    "prepub": "npm run build",
-    "pub": "sh release.sh"
+    "postinstall": "ts-node tools/init",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -89,20 +85,25 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
-    "@types/jest": "^23.3.2",
+    "@types/jest": "^25.1.3",
     "@types/node": "^10.11.0",
+    "@types/qs": "^6.9.1",
+    "body-parser": "^1.19.0",
     "colors": "^1.3.2",
     "commitizen": "^3.0.0",
+    "cookie-parser": "^1.4.4",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "cz-conventional-changelog": "^2.1.0",
+    "express": "^4.17.1",
     "husky": "^1.0.1",
-    "jest": "^23.6.0",
-    "jest-config": "^23.6.0",
+    "jest": "^25.1.0",
+    "jest-config": "^25.1.0",
     "lint-staged": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
     "prompt": "^1.0.0",
+    "qs": "^6.9.1",
     "replace-in-file": "^3.4.2",
     "rimraf": "^2.6.2",
     "rollup": "^0.67.0",
@@ -114,21 +115,18 @@
     "semantic-release": "^15.9.16",
     "shelljs": "^0.8.3",
     "travis-deploy-once": "^5.0.9",
-    "ts-jest": "^23.10.2",
+    "ts-jest": "^25.2.1",
+    "ts-loader": "^6.2.1",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
-    "typedoc": "^0.12.0",
-    "typescript": "^3.0.3",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-middleware": "^3.7.2",
-    "webpack-hot-middleware": "^2.25.0",
-    "qs": "^6.9.1",
-    "cookie-parser": "^1.4.4",
-    "body-parser": "^1.19.0",
-    "@types/qs": "^6.9.1",
-    "express": "^4.17.1"
+    "tslint-loader": "^3.5.4",
+    "typedoc": "^0.12.0"
+  },
+  "dependencies": {
+    "global": "^4.4.0",
+    "increase-memory-limit": "^1.0.7",
+    "typescript": "3.0.3"
   }
 }

@@ -1,4 +1,5 @@
-import { isDate, isPlaintObject } from './util'
+import { isDate, isPlainObject, isURLSearchParams } from './util'
+import { ParamsSerializer } from '../types/index'
 
 // 对请求参数进行编码，并且处理特殊字符
 
@@ -21,45 +22,58 @@ function encode(val: any): string {
 }
 
 // 处理url
-export function bulidURL(url: string, params: any = {}): string {
-  // 通过一个数组储存所有的键值对
-  let queue: string[] = []
-  let keys = Object.keys(params)
-  keys.forEach(key => {
-    let val = params[key]
-    // undefiend、null
-    if (val === undefined || val === null) {
-      return
-    }
-
-    // 如果值是数组的时候，需要遍历每个值，所以就把值统一处理成数组的形式
-    let valArr = []
-
-    // arr
-    if (Array.isArray(val)) {
-      key = key + '[]'
-      valArr = val
-    } else {
-      valArr = [val]
-    }
-    valArr.forEach(item => {
-      // date
-      if (isDate(item)) {
-        item = item.toISOString()
-      }
-      // object 通过JSON.stringify()进行处理
-      if (isPlaintObject(item)) {
-        item = JSON.stringify(item)
-      }
-      queue.push(`${key} = ${encode(item)}`)
-    })
-  })
-  // 丢弃url中的hash值
-  let index = url.indexOf('#')
-  if (index > -1) {
-    url = url.slice(0, index)
+export function bulidURL(url: string, params: any, paramsSerializer?: ParamsSerializer): string {
+  if (!params) {
+    return url
   }
+  // 对params进行自定义处理
+  let transformParams
+  if (paramsSerializer && params) {
+    transformParams = paramsSerializer(params)
+  } else if (params && isURLSearchParams(params)) {
+    // 如果params是 URLSearchParams 类型的，
+    transformParams = params.toString()
+  } else {
+    // 通过一个数组储存所有的键值对
+    let queue: string[] = []
+    let keys = Object.keys(params)
+    keys.forEach(key => {
+      let val = params[key]
+      // undefiend、null
+      if (val === undefined || val === null) {
+        return
+      }
 
+      // 如果值是数组的时候，需要遍历每个值，所以就把值统一处理成数组的形式
+      let valArr = []
+
+      // arr
+      if (Array.isArray(val)) {
+        key = key + '[]'
+        valArr = val
+      } else {
+        valArr = [val]
+      }
+      valArr.forEach(item => {
+        // date
+        if (isDate(item)) {
+          item = item.toISOString()
+        }
+        // object 通过JSON.stringify()进行处理
+        if (isPlainObject(item)) {
+          item = JSON.stringify(item)
+        }
+        queue.push(`${key} = ${encode(item)}`)
+      })
+    })
+    // 丢弃url中的hash值
+    let index = url.indexOf('#')
+    if (index > -1) {
+      url = url.slice(0, index)
+    }
+    transformParams = queue.join('&')
+  }
   // 如果url后面已经有了参数，那么就通过&拼接url参数,否则就通过?进行拼接
-  return url.indexOf('?') > -1 ? url + '&' + queue.join('&') : url + '?' + queue.join('&')
+  // return url.indexOf('?') > -1 ? url + '&' + queue.join('&') : url + '?' + queue.join('&')
+  return url.indexOf('?') > -1 ? url + '&' + transformParams : url + '?' + transformParams
 }
